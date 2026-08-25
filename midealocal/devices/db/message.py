@@ -132,16 +132,17 @@ class DBGeneralMessageBody(MessageBody):
         self.softener = body[12]
         self.progress = 0
         # progress
-        for i in range(7):
-            if (body[16] & (1 << i)) > 0:
-                self.progress = i + 1
-                break
-        self.stains = body[26]
-        self.wash_time_value = body[27]
-        self.dehydration_time_value = body[28]
-        self.dirty_degree = body[30]
+        if len(body) > 16:
+            for i in range(7):
+                if (body[16] & (1 << i)) > 0:
+                    self.progress = i + 1
+                    break
+        self.stains = body[26] if len(body) > 26 else 0
+        self.wash_time_value = body[27] if len(body) > 27 else 0
+        self.dehydration_time_value = body[28] if len(body) > 28 else 0
+        self.dirty_degree = body[30] if len(body) > 30 else 0
         self.time_remaining: float | None = None
-        if self.power:
+        if self.power and len(body) > 18:
             self.time_remaining = body[17] + (body[18] << 8)
 
 

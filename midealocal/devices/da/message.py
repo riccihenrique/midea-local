@@ -95,7 +95,7 @@ class DAGeneralMessageBody(MessageBody):
         super().__init__(body)
         self.power = body[1] > 0
         self.start = body[2] in [2, 6]
-        self.error_code = body[24]
+        self.error_code = body[24] if len(body) > 24 else 0
         self.program = body[4]
         self.wash_time = body[9]
         self.soak_time = body[12]
@@ -110,11 +110,12 @@ class DAGeneralMessageBody(MessageBody):
         self.washing_data = body[3:15]
         self.progress = 0
         self.time_remaining: int | None = None
-        for i in range(1, 7):
-            if (body[16] & (1 << i)) > 0:
-                self.progress = i
-                break
-        if self.power:
+        if len(body) > 16:
+            for i in range(1, 7):
+                if (body[16] & (1 << i)) > 0:
+                    self.progress = i
+                    break
+        if self.power and len(body) > 18:
             self.time_remaining = body[17] + body[18] * 60
 
 

@@ -97,22 +97,23 @@ class DCGeneralMessageBody(MessageBody):
         self.start = body[2] in [2, 6]
         self.status = body[2]
         self.program = body[4]
-        self.intensity = body[9]
-        self.dryness_level = body[10]
-        self.dry_temperature = body[10]
-        self.error_code = body[24]
-        self.door_warn = body[25]
-        self.ai_switch = body[27]
-        self.material = body[28]
-        self.water_box = body[29]
-        self.washing_data = body[3:15]
+        self.intensity = body[9] if len(body) > 9 else 0
+        self.dryness_level = body[10] if len(body) > 10 else 0
+        self.dry_temperature = body[10] if len(body) > 10 else 0
+        self.error_code = body[24] if len(body) > 24 else 0
+        self.door_warn = body[25] if len(body) > 25 else 0
+        self.ai_switch = body[27] if len(body) > 27 else 0
+        self.material = body[28] if len(body) > 28 else 0
+        self.water_box = body[29] if len(body) > 29 else 0
+        self.washing_data = body[3:15] if len(body) >= 15 else body[3:]
         self.progress = 0
         self.time_remaining: float | None = None
-        for i in range(7):
-            if (body[16] & (1 << i)) > 0:
-                self.progress = i + 1
-                break
-        if self.power:
+        if len(body) > 16:
+            for i in range(7):
+                if (body[16] & (1 << i)) > 0:
+                    self.progress = i + 1
+                    break
+        if self.power and len(body) > 18:
             self.time_remaining = body[17] + body[18] * 60
 
 

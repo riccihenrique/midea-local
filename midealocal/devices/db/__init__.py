@@ -164,9 +164,12 @@ class MideaDBDevice(MideaDevice):
         0x6D: "steam_care",
         0x6E: "allergy_care",
         0x70: "sterilize_wash",
+        0x71: "tub_clean",
+        0x72: "self_clean",
+        0x73: "bulky",
+        0x77: "tub_clean",
         0x80: "wash_and_dry",
         0x82: "time_dry",
-        0x73: "bulky",
         0xFE: "love",
         0xFF: "default",
     }
